@@ -4,12 +4,6 @@
   <img src="./sample.png" />
 </p>
 
-![love](https://img.shields.io/badge/Made%20with-🖤-white)
-![react](https://img.shields.io/badge/React-blue?logo=react)
-![onnxruntime-web](https://img.shields.io/badge/onnxruntime--web-white?logo=onnx&logoColor=black)
-![opencv.js](https://img.shields.io/badge/opencv.js-green?logo=opencv)
-
----
 
 Object Detection application right in your browser.
 Serving YOLOv8 in browser using onnxruntime-web with `wasm` backend.
