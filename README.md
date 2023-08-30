@@ -1,4 +1,4 @@
-# YOLOv8 with onnxruntime-web
+# yolov8-web-pipe-saga
 
 <p align="center">
   <img src="./sample.png" />
