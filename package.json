@@ -1,6 +1,6 @@
 {
-  "name": "yolov8-onnxruntime-web",
-  "homepage": "https://hyuto.github.io/yolov8-onnxruntime-web/",
+  "name": "yolov8-web-pipe-saga",
+  "homepage": "https://lamegaton.github.io/yolov8-web-pipe-saga/",
   "version": "0.1.0",
   "dependencies": {
     "@techstark/opencv-js": "4.5.5-release.2",
