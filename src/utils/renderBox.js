@@ -4,8 +4,10 @@ import labels from "./labels.json";
  * Render prediction boxes
  * @param {HTMLCanvasElement} canvas canvas tag reference
  * @param {Array[Object]} boxes boxes array
+ * @param {} option circle or box
+ * @param {} label or not
  */
-export const renderBoxes = (canvas, boxes) => {
+export const renderBoxes = (canvas, boxes, shape, label) => {
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // clean canvas
 
@@ -27,28 +29,50 @@ export const renderBoxes = (canvas, boxes) => {
 
     // draw box.
     ctx.fillStyle = Colors.hexToRgba(color, 0.2);
-    ctx.fillRect(x1, y1, width, height);
-    // draw border box
+    if (shape === 'circle') {
+      const centerX = x1 + width / 2;
+      const centerY = y1 + height / 2;
+      const radius = Math.sqrt(width * width + height * height) / 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+    } else { // default to box
+      ctx.fillRect(x1, y1, width, height);
+    }
+
+    // draw border shape
     ctx.strokeStyle = color;
     ctx.lineWidth = Math.max(Math.min(ctx.canvas.width, ctx.canvas.height) / 200, 2.5);
-    ctx.strokeRect(x1, y1, width, height);
+    if (shape === "circle") {
+      const centerX = x1 + width / 2;
+      const centerY = y1 + height / 2;
+      const radius = (Math.sqrt(width * width + height * height) / 2) - 6; // pythagore
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI) //draw arc
+      ctx.stroke();
+    } else { // default to box
+      ctx.strokeRect(x1, y1, width, height);
+    }
 
+    
     // draw the label background.
-    ctx.fillStyle = color;
-    const textWidth = ctx.measureText(klass + " - " + score + "%").width;
-    const textHeight = parseInt(font, 10); // base 10
-    const yText = y1 - (textHeight + ctx.lineWidth);
-    ctx.fillRect(
-      x1 - 1,
-      yText < 0 ? 0 : yText,
-      textWidth + ctx.lineWidth,
-      textHeight + ctx.lineWidth
-    );
-
-    // Draw labels
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText(klass + " - " + score + "%", x1 - 1, yText < 0 ? 1 : yText + 1);
-  });
+    if(label){
+      ctx.fillStyle = color;
+      const textWidth = ctx.measureText(klass + " - " + score + "%").width;
+      const textHeight = parseInt(font, 10); // base 10
+      const yText = y1 - (textHeight + ctx.lineWidth);
+      ctx.fillRect(
+        x1 - 1,
+        yText < 0 ? 0 : yText,
+        textWidth + ctx.lineWidth,
+        textHeight + ctx.lineWidth
+      );
+          
+      // Draw labels
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(klass + " - " + score + "%", x1 - 1, yText < 0 ? 1 : yText + 1);
+      }
+    });
 };
 
 class Colors {

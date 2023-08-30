@@ -6,21 +6,40 @@ import { detectImage } from "./utils/detect";
 import { download } from "./utils/download";
 import "./style/App.css";
 
+
+// Toolbar component
+const Toolbar = ({ onToggleLabel }) => {
+  return (
+    <div className="toolbar">
+      <button onClick={onToggleLabel}>Toggle Label</button>
+    </div>
+  );
+};
+
 const App = () => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState({ text: "Loading OpenCV.js", progress: null });
   const [image, setImage] = useState(null);
   const inputImage = useRef(null);
+
+  const [totalCount, setTotalCount] = useState(0);
+
   const imageRef = useRef(null);
   const canvasRef = useRef(null);
 
   // Configs
-  const modelName = "yolov8n.onnx";
-  const modelInputShape = [1, 3, 640, 640];
+  const modelName = "best.onnx";
+  const modelInputShape = [1, 3, 416, 416]; // change this 
   const topk = 100;
   const iouThreshold = 0.45;
   const scoreThreshold = 0.25;
 
+  // toolbar
+  const [isLabelVisible, setLabelVisible] = useState(true);
+  const handleToggleLabel = () => {
+    setLabelVisible(!isLabelVisible);
+    console.log("switch off bnt")
+  };
   // wait until opencv.js initialized
   cv["onRuntimeInitialized"] = async () => {
     const baseModelURL = `${process.env.PUBLIC_URL}/model`;
@@ -28,7 +47,7 @@ const App = () => {
     // create session
     const arrBufNet = await download(
       `${baseModelURL}/${modelName}`, // url
-      ["Loading YOLOv8 Segmentation model", setLoading] // logger
+      ["Loading YOLOv8 model", setLoading] // logger
     );
     const yolov8 = await InferenceSession.create(arrBufNet);
     const arrBufNMS = await download(
@@ -57,6 +76,8 @@ const App = () => {
           {loading.progress ? `${loading.text} - ${loading.progress}%` : loading.text}
         </Loader>
       )}
+      <Toolbar onToggleLabel={handleToggleLabel} />
+
       <div className="header">
         <h1>YOLOv8 Object Detection App</h1>
         <p>
@@ -67,7 +88,7 @@ const App = () => {
           Serving : <code className="code">{modelName}</code>
         </p>
       </div>
-
+      <p>Total count: {totalCount}</p>
       <div className="content">
         <img
           ref={imageRef}
@@ -82,7 +103,8 @@ const App = () => {
               topk,
               iouThreshold,
               scoreThreshold,
-              modelInputShape
+              modelInputShape,
+              setTotalCount // pass the setTotalCount function here
             );
           }}
         />

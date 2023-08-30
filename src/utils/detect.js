@@ -19,7 +19,8 @@ export const detectImage = async (
   topk,
   iouThreshold,
   scoreThreshold,
-  inputShape
+  inputShape,
+  setTotalCount
 ) => {
   const [modelWidth, modelHeight] = inputShape.slice(2);
   const [input, xRatio, yRatio] = preprocessing(image, modelWidth, modelHeight);
@@ -60,8 +61,9 @@ export const detectImage = async (
     }); // update boxes to draw later
   }
 
-  renderBoxes(canvas, boxes); // Draw boxes
+  renderBoxes(canvas, boxes, 'circle', false); // Draw boxes
   input.delete(); // delete unused Mat
+  setTotalCount(boxes.length);
 };
 
 /**
